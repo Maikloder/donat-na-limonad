@@ -38,59 +38,52 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const token = '4100118703019698.BA96E1EA82F1720814AE74D2BFFD3B63392AABABFEDD78089D767DA959CB70682E070B7ADC4883D1F2B78604823416A3ABCD3C5BD3277CDFED777C860058B74E830BDE3843B46D6A6FB924DB6A5ED04F937488954F76D4A68B6F65F76B18D992E97BBB3FC8FC0C4FA3B4258D00D8C664C39DE40FE2D91559CF576E0883E9D2D2'; // замените на ваш токен
+            const pantryUrl = 'https://getpantry.cloud/apiv1/pantry/ad586b77-0421-459c-a631-ffc793bf770f/basket/donat-na-lomonad';
+            const myApiUrl = 'https://script.google.com/macros/s/AKfycbxguYebQbigqifFXtAaq_Q_Fo2FfQ0SPLhhk-bmnKFjEvkbCS0aHnUS9zS5z3UpB0Sa/exec';
 
-            // CORS Anywhere URL
-            const corsAnywhere = '';
-
-            // Fetch balance
-            fetch(corsAnywhere + 'https://yoomoney.ru/api/account-info', {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + token,
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Access-Control-Allow-Origin': '*'
-                },
-                body: ''
-            })
+            fetch(pantryUrl)
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('balance').innerText = data.balance + ' RUB';
+                    // Update balance and history with pantryUrl data
+                    updatePage(data);
+                    // Check myApi for updated data
+                    fetch(myApiUrl)
+                        .then(response => response.json())
+                        .then(newData => {
+                            // Compare data with pantryUrl
+                            if (!isEqual(data, newData)) {
+                                // If data is different, update page with myApi data
+                                updatePage(newData);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching data from myApi:', error);
+                        });
                 })
                 .catch(error => {
                     document.getElementById('balance').innerText = 'Failed to load balance.';
-                    console.error('Error fetching balance:', error);
-                });
-
-            // Fetch history
-            fetch(corsAnywhere + 'https://yoomoney.ru/api/operation-history', {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + token,
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Access-Control-Allow-Origin': '*'
-                },
-                body: new URLSearchParams({
-                    'type': 'deposition',
-                    'details': 'true'
-                })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    const historyElement = document.getElementById('history');
-                    historyElement.innerHTML = ''; // clear loading text
-
-                    data.operations.forEach(operation => {
-                        const listItem = document.createElement('li');
-                        listItem.className = 'list-group-item';
-                        listItem.innerText = `${operation.datetime}: ${operation.amount} RUB - ${operation.title}`;
-                        historyElement.appendChild(listItem);
-                    });
-                })
-                .catch(error => {
                     document.getElementById('history').innerHTML = '<li class="list-group-item">Failed to load history.</li>';
-                    console.error('Error fetching history:', error);
+                    console.error('Error fetching data from pantryUrl:', error);
                 });
+
+            function updatePage(data) {
+                // Update balance
+                document.getElementById('balance').innerText = data.balance + ' RUB';
+                // Update history
+                const historyElement = document.getElementById('history');
+                historyElement.innerHTML = ''; // clear loading text
+                data.history.forEach(operation => {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'list-group-item';
+                    listItem.innerText = `${operation.datetime}: ${operation.amount} RUB - ${operation.title}`;
+                    historyElement.appendChild(listItem);
+                });
+            }
+
+            function isEqual(data1, data2) {
+                // Compare balance and history arrays
+                return JSON.stringify(data1) === JSON.stringify(data2);
+            }
         });
     </script>
 </body>
