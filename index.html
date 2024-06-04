@@ -1,1 +1,96 @@
-Донат на Лимонад
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Balance and History</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="text-center">Account Balance and History</h2>
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h4>Account Balance</h4>
+                    </div>
+                    <div class="card-body">
+                        <p id="balance" class="display-4 text-center">Loading...</p>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h4>History of Transactions</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul id="history" class="list-group">
+                            <li class="list-group-item">Loading...</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const token = '4100118703019698.BA96E1EA82F1720814AE74D2BFFD3B63392AABABFEDD78089D767DA959CB70682E070B7ADC4883D1F2B78604823416A3ABCD3C5BD3277CDFED777C860058B74E830BDE3843B46D6A6FB924DB6A5ED04F937488954F76D4A68B6F65F76B18D992E97BBB3FC8FC0C4FA3B4258D00D8C664C39DE40FE2D91559CF576E0883E9D2D2'; // замените на ваш токен
+
+            // CORS Anywhere URL
+            const corsAnywhere = '';
+
+            // Fetch balance
+            fetch(corsAnywhere + 'https://yoomoney.ru/api/account-info', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: ''
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('balance').innerText = data.balance + ' RUB';
+                })
+                .catch(error => {
+                    document.getElementById('balance').innerText = 'Failed to load balance.';
+                    console.error('Error fetching balance:', error);
+                });
+
+            // Fetch history
+            fetch(corsAnywhere + 'https://yoomoney.ru/api/operation-history', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    'type': 'deposition',
+                    'details': 'true'
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const historyElement = document.getElementById('history');
+                    historyElement.innerHTML = ''; // clear loading text
+
+                    data.operations.forEach(operation => {
+                        const listItem = document.createElement('li');
+                        listItem.className = 'list-group-item';
+                        listItem.innerText = `${operation.datetime}: ${operation.amount} RUB - ${operation.title}`;
+                        historyElement.appendChild(listItem);
+                    });
+                })
+                .catch(error => {
+                    document.getElementById('history').innerHTML = '<li class="list-group-item">Failed to load history.</li>';
+                    console.error('Error fetching history:', error);
+                });
+        });
+    </script>
+</body>
+
+</html>
