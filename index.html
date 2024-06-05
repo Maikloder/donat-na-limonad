@@ -12,13 +12,14 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-12">
-                <h2 class="text-center">Донат на Лимонад</h2>
+                <h2 class="text-center">Донат на Лимонад 🍋</h2>
                 <div class="card mt-4">
                     <div class="card-header">
-                        <h4>Лимонадный баланс</h4>
+                        <h4>Лимонадного баланса хватит на</h4>
                     </div>
                     <div class="card-body">
-                        <p id="balance" class="display-4 text-center">0 🍋</p>
+                        <p id="balance" class="display-4 text-center">0 🥤</p>
+                        <p id="balance-note" class="text-center">🥤 обозначает графин</p>
                     </div>
                 </div>
             </div>
@@ -27,7 +28,7 @@
             <div class="col-md-6 offset-md-3">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Информация о донатах</h4>
+                        <h4>Информация для доната</h4>
                     </div>
                     <div class="card-body">
                         <table class="table">
@@ -46,7 +47,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <p class="text-center">После перевода лимонадный баланс пополнится автоматически. 🥤</p>
+                        <p class="text-center">После перевода лимонадный баланс пополнится автоматически.</p>
                     </div>
                 </div>
             </div>
@@ -84,7 +85,9 @@
 
             function updatePage(data) {
                 // Update balance
-                document.getElementById('balance').innerText = data.balance + ' 🍋';
+                document.getElementById('balance').innerText = Math.round(data.balance / 200 * 10) / 10 + ' 🥤';
+                // Add note about the symbol
+                document.getElementById('balance-note').innerText = '🥤 обозначает графин';
             }
 
             function isEqual(data1, data2) {
