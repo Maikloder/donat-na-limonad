@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account Balance and History</title>
+    <title>Донат на лимонад</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -12,24 +12,41 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-12">
-                <h2 class="text-center">Account Balance and History</h2>
+                <h2 class="text-center">Донат на Лимонад</h2>
                 <div class="card mt-4">
                     <div class="card-header">
-                        <h4>Account Balance</h4>
+                        <h4>Лимонадный баланс</h4>
                     </div>
                     <div class="card-body">
-                        <p id="balance" class="display-4 text-center">Loading...</p>
+                        <p id="balance" class="display-4 text-center">0 🍋</p>
                     </div>
                 </div>
-
-                <div class="card mt-4">
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
                     <div class="card-header">
-                        <h4>History of Transactions</h4>
+                        <h4>Информация о донатах</h4>
                     </div>
                     <div class="card-body">
-                        <ul id="history" class="list-group">
-                            <li class="list-group-item">Loading...</li>
-                        </ul>
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>Способ пополнения</td>
+                                    <td>СБП, Банк Юмани</td>
+                                </tr>
+                                <tr>
+                                    <td>Номер телефона</td>
+                                    <td>+79773444105</td>
+                                </tr>
+                                <tr>
+                                    <td>Получатель</td>
+                                    <td>Милованов М.И.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="text-center">После перевода лимонадный баланс пополнится автоматически. 🥤</p>
                     </div>
                 </div>
             </div>
@@ -62,22 +79,12 @@
                 })
                 .catch(error => {
                     document.getElementById('balance').innerText = 'Failed to load balance.';
-                    document.getElementById('history').innerHTML = '<li class="list-group-item">Failed to load history.</li>';
                     console.error('Error fetching data from pantryUrl:', error);
                 });
 
             function updatePage(data) {
                 // Update balance
                 document.getElementById('balance').innerText = data.balance + ' RUB';
-                // Update history
-                const historyElement = document.getElementById('history');
-                historyElement.innerHTML = ''; // clear loading text
-                data.history.forEach(operation => {
-                    const listItem = document.createElement('li');
-                    listItem.className = 'list-group-item';
-                    listItem.innerText = `${operation.datetime}: ${operation.amount} RUB - ${operation.title}`;
-                    historyElement.appendChild(listItem);
-                });
             }
 
             function isEqual(data1, data2) {
