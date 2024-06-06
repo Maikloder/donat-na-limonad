@@ -35,11 +35,10 @@
                             <tbody>
                                 <tr>
                                     <td>Перевод по номеру</td>
-                                    <td><span id="phone-number"
-                                            onclick="copyToClipboard('+79773444105')">+79773444105</span></td>
+                                    <td>+79773444105</td>
                                 </tr>
                                 <tr>
-                                    <td>Банк</td>
+                                    <td><b>Банк</b> получателя</td>
                                     <td>
                                         <svg width="40" height="27" fill="none" xmlns="http://www.w3.org/2000/svg"
                                             viewBox="0 0 500 320" class="lsp-159vm6z">
@@ -53,6 +52,9 @@
                                 </tr>
                                 <tr>
                                     <td>Получатель</td>
+                                    <path
+                                        d="M284.49,10C201.05,10,134,77.5,134,160c0,83.18,67.71,150,150.47,150S435,242.5,435,160,367.25,10,284.49,10Zm0,205.91c-30.78,0-56.08-25.23-56.08-55.91s25.3-55.91,56.08-55.91,56.09,25.23,56.09,55.91C339.89,190.68,315.27,215.91,284.49,215.91Z"
+                                        class="brand" fill="#8B3FFD"></path>
                                     <td>Милованов М.И.</td>
                                 </tr>
                             </tbody>
@@ -105,16 +107,6 @@
                 return JSON.stringify(data1) === JSON.stringify(data2);
             }
         });
-
-        function copyToClipboard(text) {
-            const tempInput = document.createElement('input');
-            tempInput.value = text;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-            alert('Номер телефона скопирован: ' + text);
-        }
     </script>
 </body>
 
